@@ -8,6 +8,7 @@ import com.rouesvm.servback.registry.item.BackpackItemJsonRegistry;
 import com.rouesvm.servback.registry.item.BackpackItemRegistry;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
+import net.fabricmc.fabric.api.recipe.v1.ingredient.DefaultCustomIngredients;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -22,6 +23,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import org.jspecify.annotations.NonNull;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.component.BundleContents;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -50,6 +53,10 @@ protected @NonNull RecipeProvider createRecipeProvider(HolderLookup.Provider wra
 
     private void itemRecipes(HolderLookup.Provider wrapperLookup, RecipeOutput exporter) {
         HolderLookup.RegistryLookup<Item> itemWrap = wrapperLookup.lookupOrThrow(Registries.ITEM);
+        Ingredient bundle = DefaultCustomIngredients.components(
+          Ingredient.of(Items.BUNDLE),
+          builder -> builder.set(DataComponents.BUNDLE_CONTENTS, BundleContents.EMPTY)
+        );
 
         ShapedRecipeBuilder.shaped(itemWrap, RecipeCategory.MISC, BackpackItemRegistry.ENDER_BACKPACK, 1)
                 .pattern(" # ")
@@ -71,11 +78,12 @@ protected @NonNull RecipeProvider createRecipeProvider(HolderLookup.Provider wra
                 .save(exporter);
 
         ShapedRecipeBuilder.shaped(itemWrap, RecipeCategory.MISC, BackpackItemJsonRegistry.getBackpackByName("small"), 1)
-                .pattern("SiS")
+                .pattern("ScS")
                 .pattern("#C#")
-                .pattern(" S ")
+                .pattern("iBi")
                 .define('#', Items.LEATHER).define('S', Items.STRING)
-                .define('i', Items.COPPER_INGOT).define('C', Items.CHEST)
+                .define('c', Items.COPPER_INGOT).define('C', Items.CHEST)
+                .define('i', Items.IRON_INGOT).define('B', bundle)
                 .unlockedBy("get_chest", InventoryChangeTrigger.TriggerInstance.hasItems(Items.CHEST))
                 .save(exporter);
 
