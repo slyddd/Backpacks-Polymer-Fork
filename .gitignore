@@ -4,6 +4,10 @@
 build/
 out/
 classes/
+generated/
+
+# zed editor
+.zed/
 
 # eclipse
 
